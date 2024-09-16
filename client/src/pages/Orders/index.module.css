@@ -1,0 +1,138 @@
+.wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+.right_Panel {
+    flex: 1;
+    margin-left: 13.9rem;
+}
+
+.header {
+    color: #333333e5;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.orderImage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    padding: 10px 20px;
+}
+
+.order-info {
+    background-color: white;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.1);
+}
+
+.order-info h2 {
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #16962B;
+}
+
+.order-details {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.order-details-left, .order-details-right {
+    flex-basis: 50%;
+}
+
+.order-details-left {
+    margin-top: 10px;
+}
+
+.delivery-info, .payment-info {
+    margin-top: 20px;
+}
+
+.delivery-info h2 , .payment-info h2{
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #16962B;
+}
+
+.delivery-details {
+    display: flex;
+    justify-content: space-between;
+}
+
+.delivery-details-left,
+.delivery-details-right {
+    flex-basis: 50%;
+}
+
+.payment-details {
+    width: 100%;
+}
+
+.tracking-info {
+    display: flex;
+    height: calc(100% - 50px);
+}
+
+.tracking-details {
+    flex: 1;
+    padding-right: 16px;
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+.mapContainer {
+    flex: 1; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background-color: #f5f5f5;
+    position: relative;
+}
+
+.popup {
+    width: 250px;
+    position: absolute;
+    bottom: 6rem;
+    right: 3rem;
+    border: none;
+    z-index: 9999;
+    padding: 15px;
+    background: white;
+    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.205);
+    border-radius: 8px;
+}
+
+.avatarimg {
+    width: 25px;
+    height: 25px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.profile-Name {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.comment-icon {
+    font-size: 15px;
+    color: #16962B;
+}

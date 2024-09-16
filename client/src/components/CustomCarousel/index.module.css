@@ -1,0 +1,36 @@
+.carouselContainer {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.carouselWrapper {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.carouselSlide {
+    min-width: 100%;
+    box-sizing: border-box;
+}
+
+.carouselDots {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.dots {
+    width: 6px;
+    height: 6px;
+    background-color: #bbb;
+    margin: 0 5px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+.active {
+    background-color: green;
+}

@@ -1,0 +1,60 @@
+.asideNav {
+    max-width: 220px;
+    position: fixed;
+    box-shadow: 2px 0px 15px rgba(0, 0, 0, 0.123);
+    @apply w-full top-0 left-0;
+    height: 100vh;
+    background: white;
+}
+
+.logo {
+    @apply w-full flex justify-center mt-3
+}
+
+.logo img {
+    width: 60px;
+    height: 60px;
+}
+
+.navMenu {
+    @apply w-full pt-3 pb-3 pl-3 pr-3 mt-3;
+}
+
+.navItems li{
+    display: flex;
+    padding: 5px;
+    margin-bottom: 18px;
+    color: #333333c0;
+    transition: color 0.3s ease;
+    font-size: 14px;
+}
+
+.navItems li.active {
+    color: #1DC939;
+}
+
+.navItems li:hover {
+    color: #1DC939;
+}
+
+.navLink {
+    @apply w-full flex items-center gap-3;
+}
+
+
+.second_Nav_Menu {
+    @apply w-full pt-5 pb-5 pl-3 pr-3 mt-0;
+}
+
+.second_Nav_Menu ul li {
+    display: flex;
+    padding: 5px;
+    margin-bottom: 18px;
+    color: #333333c0;
+    transition: color 0.3s ease;
+    font-size: 14px;
+}
+
+.second_Nav_Menu ul li:hover {
+    color: #1DC939;
+}

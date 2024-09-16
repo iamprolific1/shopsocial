@@ -1,0 +1,35 @@
+.right_SideBar{
+    position: sticky;
+    top: 5rem;
+    width: 250px;
+    height: calc(100vh - 5rem);
+    padding: 15px;
+    overflow-y: auto;
+    box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.048);
+    background: white;
+}
+
+.header{
+    font-size: 17px;
+    @apply tracking-wide uppercase font-semibold text-center mt-2 mb-3;
+    color: #333333b2;
+}
+
+.right_SideBar ul li{
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.navLinks{
+    @apply flex justify-start w-full py-2 px-2 items-center gap-3 tracking-wider;
+    @apply font-medium;
+    font-size: 13px;
+    border-radius: 5px;
+    color: #333333c2;
+    
+}
+
+.navLinks:hover {
+    color: #1DC939;
+    transition: all 400ms ease;
+}

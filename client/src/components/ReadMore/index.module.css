@@ -1,0 +1,16 @@
+.text {
+    font-size: 12px;
+    color: #333333a6;
+    font-weight: 400;
+    letter-spacing: 1px;
+}
+
+.showMoreToggle {
+    font-size: 12px;
+    color: #117922;
+    cursor: pointer;
+}
+
+.readMore_Container {
+    padding: 5px 10px;
+}

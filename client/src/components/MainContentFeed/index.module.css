@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Matemasie&display=swap');
+
+.main-content{
+    flex: 1; 
+    margin-left: 250px; 
+    /* margin-right: 220px; */
+    padding: 20px;
+    overflow-y: auto;
+    /* border: 1px solid red; */
+    width: 100%;
+    background: white;
+    font-size: 15px;
+    letter-spacing: 1px;
+}
+
+.card {
+    margin: 0 auto 25px auto;
+    width: 75%;
+}
+
+.carousel-image {
+    width: 100%; 
+    height: 450px; 
+    object-fit: cover; 
+}
+
+.slick-slide {
+    text-align: center;
+}
+
+.slick-dots li button:before {
+    color: green;
+}
+
+.product_Names {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding: 10px;
+    letter-spacing: 1px;
+    text-align: center;
+    word-wrap: break-word;
+    letter-spacing: 2px;
+    color: #302b2bd3;
+}
+
+.price_Rating_Container {
+    display: grid;
+    grid-template-columns: 75% 25%;
+    padding: 5px;
+}
+
+.stars{
+    padding: 5px;
+}
+
+.product_Prices {
+    font-size: 17px;
+    font-weight: 500;
+    color: #117922;
+    letter-spacing: 2px;
+    text-align: left;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    margin-top: 3px;
+}
+
+.action_Icons{
+    color: #1DC939;
+    width: 20px;
+    height: 20px;
+}
+
+/* .option_Btn  {
+    color: #117922;
+} */
+
+.Feed_Header {
+    width: 100%;
+    /* padding: 5px; */
+    letter-spacing: 1px;
+    font-size: 1.6rem;
+    color: #5DD39E;
+    font-weight: bold;
+    font-family: "Matemasie", sans-serif;
+    margin: 0;
+}
+
+.video-wrapper {
+    position: relative;
+}
+
+.mute-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: all 400ms ease;
+}
+
+.icon_Mute {
+    color: white;
+}
+
+.video-wrapper:hover .mute-icon {
+    display: flex;
+}
+
+.action_Count {
+    color: #c0bcbc;
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+.menu_Container {
+    max-width: 200px;
+    width: 100%;
+    box-shadow: none;
+}
+
+.menuItem {
+    font-size: 13px;
+    letter-spacing: 1px;
+}

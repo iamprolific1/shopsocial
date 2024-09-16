@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+.nav{
+    font-family: "Montserrat", sans-serif;
+    @apply shadow fixed top-0 w-full;
+    background: #fff;
+    /* background: red; */
+    z-index: 100;
+}
+
+.logo {
+  width: 100px;
+  height: 100px;
+}

@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap');
+
+.welcomeText {
+    padding: 10px;
+    font-size: 17px;
+    letter-spacing: 1px;
+    color: #f3dfdf;
+    font-family: "Kaushan Script", cursive;
+    font-family: 400;
+    font-style: normal;
+}
+
+.cursor {
+    display: inline-block;
+    width: 10px;
+    color: #f3dfdf;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    from {
+        opacity: 1;
+    } to {
+        opacity: 0;
+    }
+}

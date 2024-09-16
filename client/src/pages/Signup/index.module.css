@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap');
+
+.container {
+    width: 100%;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    
+}
+
+.left_Panel {
+    background: #1DC939;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.right_Panel {
+    padding: 15px;
+    width: 100%;
+    height: 100vh;
+}
+
+.headerText {
+    font-size: 28px;
+    font-weight: bold;
+    color: white;
+}
+
+.form {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    padding: 10px 25px;
+}
+
+.box {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 10px 0;
+}
+
+.input {
+    border-radius: 8px;
+}
+
+.welcomeText {
+    padding: 10px;
+    font-size: 17px;
+    letter-spacing: 1px;
+    color: #f3dfdf;
+    font-family: "Kaushan Script", cursive;
+    font-family: 400;
+    font-style: normal;
+}
+
+.have_Account {
+    width: 100%;
+    margin: 5px 0;
+    text-align: center;
+}
+
+.have_Account p {
+    color: #f3dfdf;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+
+.checkPassword {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    /* gap: 10px; */
+}
+
+
+.passwordCritic {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    font-size: 12px;
+    gap: 10px;
+    margin: 5px;
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.034);
+}
+
+.criticError {
+    color: red;
+    border: 1px solid red;
+}
+
+.criticSuccess {
+    color: #1DC939;
+    border: 1px solid #1DC939;
+}

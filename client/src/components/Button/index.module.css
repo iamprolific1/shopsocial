@@ -1,0 +1,16 @@
+.btn{
+    @apply rounded-xl shadow-sm py-2 tracking-wide;
+    font-size: 16px;
+    border: none;
+    outline: none;
+    width: 150px;
+}
+
+.primary {
+    @apply bg-[#1DC939] text-white;
+    
+}
+
+.secondary {
+    @apply bg-[#A5E9B0] text-black;
+}

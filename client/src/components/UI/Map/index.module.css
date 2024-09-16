@@ -1,0 +1,63 @@
+/* CustomPopup.module.css */
+.popupContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    /* z-index: 1000; */
+}
+
+.popupImage {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.popupContent {
+    display: flex;
+    flex-direction: column;
+}
+
+.popupTitle {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.popupText {
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+.popupButton {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    border-radius: 5px;
+}
+
+.popupButton:hover {
+    background-color: #45a049;
+}
+
+.leaflet-container {
+    z-index: 1;
+    display: none;
+}
+
+.leaflet-marker-pane {
+    z-index: 500;  /* Adjust marker pane z-index */
+}
+
+.leaflet-popup-pane {
+    z-index: 1000 !important;  /* Ensure popups are on top */
+}
+
+/* Additional styling for popups */
+.leaflet-popup {
+    z-index: 9999 !important;  /* Make sure the popup is always visible */
+}
