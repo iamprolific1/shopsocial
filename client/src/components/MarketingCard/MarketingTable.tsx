@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from "@mui/material";
 import { MarketingActivity, MarketingActivityProps } from './MarketingActivity';
+import { CurrencyFormatter } from '../../utils/CurrencyFormatter';
 import styles from './index.module.css';
 
 const activityData:MarketingActivityProps[] =[
@@ -10,7 +11,7 @@ const activityData:MarketingActivityProps[] =[
         status: 'Draft',
         ctr: '0%',
         cost: '-',
-        sales: '$0.00',
+        sales: CurrencyFormatter(0),
         sessions: '0',
         statusColor: ''
     },
@@ -20,7 +21,7 @@ const activityData:MarketingActivityProps[] =[
         status: 'Sent',
         ctr: '0%',
         cost: '-',
-        sales: '$0.00',
+        sales: CurrencyFormatter(0),
         sessions: '0',
         statusColor: ''
     },
@@ -30,7 +31,7 @@ const activityData:MarketingActivityProps[] =[
         status: 'Deleted',
         ctr: '0%',
         cost: '-',
-        sales: '$0.00',
+        sales: CurrencyFormatter(0),
         sessions: '0',
         statusColor: ''
     },

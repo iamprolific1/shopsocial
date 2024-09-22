@@ -1,0 +1,34 @@
+.marketingVideo {
+    border-radius: 8px;
+    position: relative;
+    max-width: 600px;
+}
+
+.videoElement {
+    width: 100%;
+    height: 300px;
+    display: block;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.controls {
+    position: absolute;
+    bottom: 18px;
+    left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.timer {
+    color: white;
+    font-size: 14px;
+}
+
+button:focus {
+    outline: none;
+}

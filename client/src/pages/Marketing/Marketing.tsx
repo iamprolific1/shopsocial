@@ -1,8 +1,4 @@
-import { useRef, useState } from "react";
-// import { Link } from 'react-router-dom';
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import PauseIcon from "@mui/icons-material/Pause";
-import { IconButton } from "@mui/material";
+
 import AsideNav from "../../components/DashboardAsideBar/AsideNav";
 import { AuthenticatedTopBar } from "../../components/TopBar/AuthenticatedTopBar";
 import { Card } from '../../components/MarketingCard/Card';
@@ -22,12 +18,13 @@ import BuildOutlinedIcon from "@mui/icons-material/BuildOutlined";
 import { Button } from "@mui/material";
 import Logo1 from "../../assets/logo.png";
 import video14 from '../../assets/videos/video14.mp4';
+import { VideoPlayer } from '../../components/VideoPlayer/VideoPlayer';
 
 import styles from "./index.module.css";
 
 const navItems = [
     { icon: <DashboardIcon />, label: 'Dashboard', to: '#dashboard' },
-    { icon: <SellOutlinedIcon />, label: 'Sales', to: '#sales' },
+    { icon: <SellOutlinedIcon />, label: 'Orders', to: '#orders' },
     { icon: <MoreOutlinedIcon />, label: 'Catalog', to: '#catalog' },
     { icon: <GroupOutlinedIcon />, label: 'Customers', to: '#customers' },
     { icon: <CampaignOutlinedIcon />, label: 'Marketing', to: '#marketing', isActive: true },
@@ -55,37 +52,7 @@ const cardData = [
 ];
 
 const Marketing = ()=> {
-    const videoRef = useRef<HTMLVideoElement>(null);
     
-    const [isPlaying, setIsPlaying] = useState<boolean>(false);
-    const [currentTime, setCurrentTime] = useState<string>("00.00");
-
-    const togglePlayPause = ()=> {
-        if (videoRef.current) {
-            if (isPlaying) {
-                videoRef.current.pause();
-            } else {
-                videoRef.current.play();
-            }
-            setIsPlaying(!isPlaying)
-        }
-    }
-
-    const updateTime = ()=> {
-        if (videoRef.current) {
-            const minutes = Math.floor(videoRef.current.currentTime / 60);
-            const seconds = Math.floor(videoRef.current.currentTime % 60);
-
-            const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-            const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
-
-            setCurrentTime(`${formattedMinutes}:${formattedSeconds}`);
-        }
-    };
-
-    const handleVideoEnd = ()=> {
-        setIsPlaying(false);
-    }
 
     return (
         <div className={styles['container']}>
@@ -128,26 +95,8 @@ const Marketing = ()=> {
                     </div>
                 </section>
                 <section className='flex px-4 gap-x-2 mt-2 bg-white'>
-                    <div className={styles['marketingVideo']}>
-                        <video 
-                            className={styles['videoElement']}
-                            src={video14} 
-                            ref={videoRef}
-                            onTimeUpdate={updateTime}
-                            onEnded={handleVideoEnd}
-                        ></video>
+                    <VideoPlayer videoSrc={video14} />
 
-                        <div className={styles.controls}>
-                            <IconButton
-                            onClick={togglePlayPause}
-                            aria-label="play/pause"
-                            sx={{ color:  '#16962B' }}
-                            >
-                            {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
-                            </IconButton>
-                            <span className={styles.timer}>{currentTime}</span>
-                        </div>
-                    </div>
                     <div className={styles['marketingDetails']}>
                         <h4 className=' text-[18px] px-3 py-2 tracking-wide font-bold text-[#333333e1]'>E-mail marketing on shopsocial</h4>
                         <div className=' text-[14px] px-3 py-2 tracking-wider font-normal text-[#333333ea]'>
@@ -218,26 +167,7 @@ const Marketing = ()=> {
                     </div>
 
                     <div className='mt-5 mb-2 flex items-center gap-x-2'>
-                        <div className={styles['marketingVideo']}>
-                            <video 
-                                className={styles['videoElement']}
-                                src={video14} 
-                                ref={videoRef}
-                                onTimeUpdate={updateTime}
-                                onEnded={handleVideoEnd}
-                            ></video>
-
-                            <div className={styles.controls}>
-                                <IconButton
-                                onClick={togglePlayPause}
-                                aria-label="play/pause"
-                                sx={{ color:  '#16962B' }}
-                                >
-                                {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
-                                </IconButton>
-                                <span className={styles.timer}>{currentTime}</span>
-                            </div>
-                        </div>
+                        <VideoPlayer videoSrc={video14} />
                         <div className={styles['marketingDetails']}>
                             <h4 className='text-[#333] text-[18px] tracking-wide font-bold text-center'>How to advertise on shopsocial</h4>
                             <div className='text-[13px] mt-2 mb-2 tracking-wider font-medium text-center'>
