@@ -83,7 +83,6 @@ export const AuthenticatedTopBar = ()=> {
                             width: '250px',
                             height: '40px',
                             letterSpacing: '1px',
-                            
                         }}
                     />
                 </FormControl>

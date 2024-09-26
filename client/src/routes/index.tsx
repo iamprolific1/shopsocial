@@ -11,6 +11,7 @@ import { TrackOrder } from '../pages/Orders/OrderTracking';
 import Shipments from '../pages/Shipments/Shipment';
 import Invoice from '../pages/Invoice/Invoice';
 import Refunds from '../pages/Refunds/Refunds';
+import RefundsDetails from '../pages/Refunds/RefundsDetails';
 import Transactions from '../pages/Transactions/Transactions';
 import Bookings from '../pages/Bookings/Bookings';
 import Marketing from '../pages/Marketing/Marketing';
@@ -22,6 +23,7 @@ import HelpPayment from '../pages/Help/Payment';
 import HelpPlaceOrder from '../pages/Help/PlaceOrder';
 import HelpReturnRefunds from '../pages/Help/ReturnRefunds';
 import HelpTrackOrders from '../pages/Help/TrackOrder';
+import PaymentGateway from '../pages/Payment/Payment';
 
 
 enum RoutePaths {
@@ -37,6 +39,7 @@ enum RoutePaths {
     shipments = '/shipment',
     invoice = '/invoice',
     refunds = '/refunds',
+    refundDetails = '/refunds/:refundId',
     transactions = '/transactions',
     bookings = '/bookings',
     marketing = '/marketing',
@@ -47,7 +50,8 @@ enum RoutePaths {
     helpPayment = '/help/payment',
     placeOrder = '/help/place-orders',
     helpreturnrefunds = '/help/return-refunds',
-    helpTrackOrders = '/help/track-orders'
+    helpTrackOrders = '/help/track-orders',
+    payment = '/payment'
 }
 
 export const PageRoutes = () => {
@@ -66,6 +70,7 @@ export const PageRoutes = () => {
                 <Route path={RoutePaths.shipments} element={<Shipments />} />
                 <Route path={RoutePaths.invoice} element={<Invoice />} />
                 <Route path={RoutePaths.refunds} element={<Refunds />} />
+                <Route path={RoutePaths.refundDetails} element={<RefundsDetails />} />
                 <Route path={RoutePaths.transactions} element={<Transactions />} />
                 <Route path={RoutePaths.bookings} element={<Bookings />} />
                 <Route path={RoutePaths.marketing} element={<Marketing />} />
@@ -77,6 +82,7 @@ export const PageRoutes = () => {
                 <Route path={RoutePaths.placeOrder} element={<HelpPlaceOrder />} />
                 <Route path={RoutePaths.helpreturnrefunds} element={<HelpReturnRefunds />} />
                 <Route path={RoutePaths.helpTrackOrders} element={<HelpTrackOrders />} />
+                <Route path={RoutePaths.payment} element={<PaymentGateway />} />
 
             </Routes>
         </>
