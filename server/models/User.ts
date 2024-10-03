@@ -3,11 +3,18 @@ interface UserDetails {
     name: string;
     username: string;
     email: string;
-    role: string;
+    // role: string;
     accountType: string;
-    marketType: string;
     password: string;
     avatar?: string;
+    isActive: boolean;
+    isTokenVerified: boolean;
+    isAccountBadgeVerified: boolean;
+    lastLogin: Date;
+    resetPasswordToken: string;
+    resetPasswordExpiresAt: Date;
+    verificationToken: string;
+    verificationTokenExpiresAt: Date;
 }
 
 const userSchema = new Schema<UserDetails>({
@@ -21,17 +28,14 @@ const userSchema = new Schema<UserDetails>({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
-    role: {
-        type: String,
-        required: true
-    },
+    // role: {
+    //     type: String,
+    //     required: true
+    // },
     accountType: {
-        type: String,
-        required: true
-    },
-    marketType: {
         type: String,
         required: true
     },
@@ -41,7 +45,27 @@ const userSchema = new Schema<UserDetails>({
     },
     avatar: {
         type: String
-    }
+    },
+    isActive: {
+        type: Boolean,
+        default: false,
+    },
+    isTokenVerified: {
+        type: Boolean,
+        default: false,
+    },
+    isAccountBadgeVerified: {
+        type: Boolean,
+        default: false
+    },
+    lastLogin: {
+        type: Date,
+        default: Date.now,
+    },
+    resetPasswordToken: String,
+    resetPasswordExpiresAt: Date,
+    verificationToken: String,
+    verificationTokenExpiresAt: Date,
 }, {timestamps: true})
 
 export const User = mongoose.model<UserDetails>('User', userSchema);
