@@ -1,6 +1,7 @@
 import mongoose, { Schema, model } from "mongoose";
 interface UserDetails {
-    name: string;
+    firstname: string;
+    lastname: string;
     username: string;
     email: string;
     // role: string;
@@ -18,9 +19,13 @@ interface UserDetails {
 }
 
 const userSchema = new Schema<UserDetails>({
-    name: {
+    firstname: {
         type: String,
         required: true
+    },
+    lastname: {
+        type: String,
+        required: true,
     },
     username: {
         type: String,
@@ -44,7 +49,8 @@ const userSchema = new Schema<UserDetails>({
         required: true
     },
     avatar: {
-        type: String
+        type: String,
+        default: '/images/blank-profile-picture.png'
     },
     isActive: {
         type: Boolean,
