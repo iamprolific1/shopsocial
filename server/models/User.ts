@@ -12,10 +12,10 @@ interface UserDetails {
     isTokenVerified: boolean;
     isAccountBadgeVerified: boolean;
     lastLogin: Date;
-    resetPasswordToken: string;
-    resetPasswordExpiresAt: Date;
-    verificationToken: string;
-    verificationTokenExpiresAt: Date;
+    resetPasswordToken: string | undefined;
+    resetPasswordExpiresAt: Date | undefined;
+    verificationToken: string | undefined;
+    verificationTokenExpiresAt: Date | undefined;
 }
 
 const userSchema = new Schema<UserDetails>({

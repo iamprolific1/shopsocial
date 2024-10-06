@@ -4,6 +4,7 @@ import { Request, Response, NextFunction } from "express";
 import { CreateError } from "../utils/CreateError";
 import { generateVerificationToken } from "../utils/generateVerificationToken";
 import { sendVerificationEmail } from "../mailer/emails";
+import { sendWelcomeMail } from "../mailer/emails";
 
 export const Signup = async (req: Request, res: Response, next: NextFunction)=> {
     const { firstname, lastname, username, email, accountType, password } = req.body;
@@ -49,5 +50,30 @@ export const Signup = async (req: Request, res: Response, next: NextFunction)=> 
 }
 
 export const verifyEmail = async(req: Request, res: Response)=> {
+    const { verificationToken } = req.body;
+
+    try {
+        const user = await User.findOne({
+            verificationToken,
+            verificationTokenExpiresAt: { $gt: Date.now() }
+        });
+        
+        if (!user) {
+            throw new Error("Invalid or expired verification token");
+        };
+
+        user.isTokenVerified = true;
+        user.verificationToken = undefined;
+        user.verificationTokenExpiresAt = undefined;
+
+        await user.save();
+        await sendWelcomeMail(user.email, user.firstname)
+        res.status(200).json({success:true, message: "Email verified successful, you can now login"})
+    } catch (error) {
+        console.error("Error sending welcome email", error);
+    }
+};
+
+export const Login = async (req: Request, res: Response)=> {
 
 }
