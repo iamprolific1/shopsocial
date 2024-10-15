@@ -24,6 +24,7 @@ import HelpPlaceOrder from '../pages/Help/PlaceOrder';
 import HelpReturnRefunds from '../pages/Help/ReturnRefunds';
 import HelpTrackOrders from '../pages/Help/TrackOrder';
 import PaymentGateway from '../pages/Payment/Payment';
+import VerifyEmail from '../pages/VerifyEmail/VerifyEmail';
 
 
 enum RoutePaths {
@@ -51,7 +52,8 @@ enum RoutePaths {
     placeOrder = '/help/place-orders',
     helpreturnrefunds = '/help/return-refunds',
     helpTrackOrders = '/help/track-orders',
-    payment = '/payment'
+    payment = '/payment',
+    verifyEmail = '/verify-email',
 }
 
 export const PageRoutes = () => {
@@ -83,6 +85,7 @@ export const PageRoutes = () => {
                 <Route path={RoutePaths.helpreturnrefunds} element={<HelpReturnRefunds />} />
                 <Route path={RoutePaths.helpTrackOrders} element={<HelpTrackOrders />} />
                 <Route path={RoutePaths.payment} element={<PaymentGateway />} />
+                <Route path={RoutePaths.verifyEmail} element={<VerifyEmail />} />
 
             </Routes>
         </>

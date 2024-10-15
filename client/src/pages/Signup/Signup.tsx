@@ -8,11 +8,16 @@ import IconButton from "@mui/material/IconButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { WelcomeText } from '../../components/WelcomeText/WelcomeText'
-import { Select, MenuItem, FormControl, InputLabel, Button, FormControlLabel, Checkbox, Typography } from "@mui/material";
+import { Select, MenuItem, FormControl, InputLabel, Button, FormControlLabel, Checkbox, Typography, SelectChangeEvent, CircularProgress } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 import styles from './index.module.css'
 import { styled } from '@mui/material/styles';
+
+import { signupUser } from '../../api/signup.authService';
+import { Validation } from '../../utils/authValidation/signupValidation';
+import { useToast } from '../../providers/ToastProvider';
+
 
 const StyledTextField = styled(TextField)({
     '& .MuiOutlinedInput-root': {
@@ -123,15 +128,42 @@ const StyledOutlinedInput = styled(OutlinedInput)({
         color: "#333333c7",
     },
 });
+
+const CustomFormControlLabel = styled(FormControlLabel)({
+    borderRadius: "4px",
+    padding: "0",
+    width: "100%",
+    fontSize: '2px'
+});
+
+
+const CustomCheckbox = styled(Checkbox)({
+    color: "gray",
+    "&.Mui-checked": {
+        color: "#16962b",
+    },
+});
+
 const Signup = () => {
+    const { showToast } = useToast()
+    const [formData, setFormData] = useState({
+        firstname: '',
+        lastname: '',
+        username: '',
+        email: '',
+        accountType: '',
+        password: '',
+        confirmPassword: '',
+    })
+
     const [showPassword, setShowPassword] = useState<{password: boolean, confirmPassword: boolean}>({
         password: false,
         confirmPassword: false,
     });
     const [password, setPassword] = useState<string>('');
     const [displayValidation, setDisplayValidation] = useState<boolean>(false);
-    const inputRef = useRef<HTMLInputElement>(null)
-    
+    const inputRef = useRef<HTMLInputElement>(null);
+    const [loading, setLoading] = useState<boolean>(false);
     const [validation, setValidation] = useState({
         length: false,
         lowerCase: false,
@@ -139,7 +171,9 @@ const Signup = () => {
         number: false,
         specialChar: false,
     });
+    const [formValidationErrors, setFormValidationErrors] = useState({})
 
+    //handle password input change and set regex validation for password
     const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>)=> {
         const newPassword = event.target.value;
         setPassword(newPassword);
@@ -150,7 +184,7 @@ const Signup = () => {
             upperCase: /[A-Z]/.test(newPassword),
             number: /[0-9]/.test(newPassword),
             specialChar: /[!@#$%^&*(),.?":{}|<>]/.test(newPassword),
-        })
+        });
     }
 
     const passwordToggleVisibility = (field: 'password' | 'confirmPassword') => {
@@ -173,8 +207,65 @@ const Signup = () => {
         setIsChecked((prev)=> !prev);
     };
 
+    //handle form input change for all fields
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>)=> {
+        const { name, value } = e.target;
+
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
+
+    // handle form submit action
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>)=> {
+        e.preventDefault();
+        setLoading(true);
+
+        //validate the form data
+        const formErrors = Validation(formData);
+        setFormValidationErrors(formErrors);
+        
+        const hasErrors = Object.values(formErrors).some(error => !!error);
+        if(hasErrors) {
+            if(formErrors.confirmPassword) {
+                showToast(formErrors.confirmPassword, 'error', {
+                    vertical: 'top',
+                    horizontal: 'center'
+                })
+            }
+
+            if(formErrors.password) {
+                showToast(formErrors.password, 'error', {
+                    vertical: 'top',
+                    horizontal: 'center'
+                })
+            }
+            setLoading(false);
+        }else{
+            try {
+                const response = await signupUser(formData);
+                showToast(response.message, 'success', {
+                    vertical: 'top',
+                    horizontal: 'center'
+                })
+            } catch (error: any) {
+                console.error(error);
+                if (error.response?.data?.message) {
+                    showToast(error.response.data.message, 'error', {
+                        vertical: 'top',
+                        horizontal: 'center'
+                    })
+                }
+                setLoading(false);
+            }
+        }
+    }
+
+
     return (
         <section className={styles['container']}>
+            
             <div className={styles['left_Panel']}>
                 <div className={styles['headerText']}><h4>Discover, Shop, & Connect.</h4></div>
                 <WelcomeText />
@@ -204,51 +295,63 @@ const Signup = () => {
                 </div>
             </div>
             <div className={styles['right_Panel']}>
-                <form action="#" className={styles['form']}>
+                <form onSubmit={handleSubmit} className={styles['form']}>
+        
                     <Box className={styles['box']}>
 
                         <FormControl variant='outlined' fullWidth>
                             <StyledTextField
                                 label="Firstname"
+                                name='firstname'
+                                value={formData.firstname || ''}
                                 variant="outlined"
                                 type='text'
                                 required
                                 className={styles['input']}
+                                onChange={handleInputChange}
                             />
                         </FormControl>
 
                         <FormControl variant='outlined' fullWidth>
                             <StyledTextField
                                 label="Lastname"
+                                name='lastname'
+                                value={formData.lastname || ''}
                                 variant="outlined"
                                 type="text"
                                 required
                                 className={styles['input']}
+                                onChange={handleInputChange}
                             />
                         </FormControl>
 
                         <FormControl variant='outlined' fullWidth>
                             <StyledTextField
                                 label="Username"
+                                name='username'
+                                value={formData.username || ''}
                                 variant="outlined"
                                 type="text"
                                 placeholder='@johndoe_'
                                 required
                                 className={styles['input']}
+                                onChange={handleInputChange}
                             />
                         </FormControl>
 
                         <FormControl variant='outlined' fullWidth>
                             <StyledTextField
                                 label="Email address"
+                                name='email'
+                                value={formData.email || ''}
                                 variant="outlined"
                                 type="email"
                                 required
-                                
+                                onChange={handleInputChange}
                             />
                         </FormControl>
                         
-                        <FormControl variant='outlined' fullWidth>
+                        <FormControl fullWidth>
                             <InputLabel id="demo-simple-select-label"
                                 sx={{
                                     fontSize: '14px',
@@ -258,19 +361,20 @@ const Signup = () => {
                                         color: 'gray',
                                     }
                                 }}
-                            >
-                                Account Type*
-                            </InputLabel>
+                            >Account Type*</InputLabel>
                             <StyledSelectField
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
-                                label="Account Type" 
-                                sx={{ borderRadius: '8px' }}
+                                name='accountType'
+                                value={formData.accountType || ''}
+                                onChange={handleInputChange}
+                                label="Account Type"
+                                required
+                                
                             >
-                                <MenuItem value={'Vendor'}>Vendor</MenuItem>
-                                {/* <MenuItem value={'Manufacturer'}>Manufacturer</MenuItem> */}
-                                <MenuItem value={'Buyer'}>Buyer</MenuItem>
-                                <MenuItem value={'Brand'}>Brand</MenuItem>
+                                <MenuItem value={"Vendor"}>Vendor</MenuItem>
+                                <MenuItem value={"Buyer"}>Buyer</MenuItem>
+                                <MenuItem value={"Brand"}>Brand</MenuItem>
                             </StyledSelectField>
                         </FormControl>
 
@@ -289,12 +393,17 @@ const Signup = () => {
                             </InputLabel>
                             <StyledOutlinedInput
                                 id="outlined-adornment-password"
+                                name='password'
                                 type={showPassword.password ? 'text' : 'password'}
-                                value={password}
+                                value={formData.password || ''}
                                 ref={inputRef}
                                 onFocus={()=> setDisplayValidation(true)}
                                 onBlur={()=>setDisplayValidation(false)}
-                                onChange={handlePasswordChange}
+                                onChange={(e)=> {
+                                    handlePasswordChange(e);
+                                    handleInputChange(e);
+                                }}
+                                required
                                 endAdornment={
                                 <InputAdornment position="end">
                                     <IconButton
@@ -356,7 +465,11 @@ const Signup = () => {
                             </InputLabel>
                             <StyledOutlinedInput
                                 id="outlined-adornment-password"
+                                name='confirmPassword'
+                                value={formData.confirmPassword || ''}
                                 type={showPassword.confirmPassword ? 'text' : 'password'}
+                                onChange={handleInputChange}
+                                required
                                 endAdornment={
                                 <InputAdornment position="end">
                                     <IconButton
@@ -375,50 +488,62 @@ const Signup = () => {
                             />
                         </FormControl>
 
-                        <Box sx={{ margin: '0'}}>
-                            <FormControlLabel
-                            
+                        <FormControl>
+                            <CustomFormControlLabel 
                                 control={
-                                    <Checkbox
+                                    <CustomCheckbox 
                                         checked={isChecked}
-                                        color="success"
-                                        sx={{
-                                            fontSize: '14px',
-                                            color: 'gray',
-                                            letterSpacing: '1px',
-                                        }}
-                                        onClick={handleCheck}
-                                        
+                                        onChange={handleCheck}
+                                        required
                                     />
                                 }
-                                label={
-                                    <Typography sx={{ 
-                                        fontSize: '14px',
-                                        color: 'gray',
-                                        letterSpacing: '1px',
-                                    }}>
+                                label= {
+                                    <Typography style={{ fontSize: '15px', color: 'grey', letterSpacing: '1px'}}>
                                         I agree to the Terms & Conditions
                                     </Typography>
                                 }
-                            />
-                        </Box>
+
         
-                        <Button 
-                            variant="contained"
-                            sx={{
-                                background: '#1DC939',
-                                margin: '2px 0',
-                                padding: '10px 0',
-                                fontSize: '15px',
-                                letterSpacing: '1px',
-                                transition: 'background-color 0.3s ease, transform 0.3s ease',
-                                '&:hover': {
-                                    background: '#17A827',
-                                    transform: 'scale(1.02)',
-                                },
-                            }}
-                            
-                        >Sign Up</Button>
+                            />
+                        </FormControl>
+                        
+                        {
+                            loading ? 
+                                (<Button 
+                                    type='button'
+                                    variant="contained"
+                                    sx={{
+                                        background: '#1DC939',
+                                        margin: '2px 0',
+                                        padding: '10px 0',
+                                        fontSize: '15px',
+                                        letterSpacing: '1px',
+                                        cursor: 'pointer',
+                                        transition: 'background-color 0.3s ease, transform 0.3s ease',
+                                        '&:hover': {
+                                            background: '#17A827',
+                                            transform: 'scale(1.02)',
+                                        },
+                                    }}
+                                    
+                                ><CircularProgress sx={{ color: 'white', marginRight: '10px'}} size={'20px'} />Please wait...</Button> ): 
+                                (<Button
+                                type='submit'
+                                variant='contained'
+                                sx={{
+                                    background: '#1DC939',
+                                    margin: '2px 0',
+                                    padding: '10px 0',
+                                    fontSize: '15px',
+                                    letterSpacing: '1px',
+                                    transition: 'background-color 0.3s ease, transform 0.3s ease',
+                                    '&:hover': {
+                                        background: '#17A827',
+                                        transform:'scale(1.02)',
+                                    }
+                                }}
+                                >SignUp</Button>)
+                        }
 
                     </Box>
                 </form>

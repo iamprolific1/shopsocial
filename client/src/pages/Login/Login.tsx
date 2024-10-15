@@ -9,8 +9,8 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material/styles";
 import { LoginWelcomeText } from '../../components/LoginWelcomeText/LoginWelcomeText';
-import GoogleIconImage from '../../assets/googleIcon.png'
-// import GoogleIcon from "@mui/icons-material/Google";
+import GoogleIconImage from '../../assets/googleIcon.png';
+
 
 const StyledTextField = styled(TextField)({
     '& .MuiOutlinedInput-root': {
@@ -95,6 +95,8 @@ const Login = () => {
     const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
+
+
     return (
         <section className={styles['container']}>
             <div className={styles['left_Panel']}>
@@ -126,7 +128,8 @@ const Login = () => {
                 </div>
             </div>
             <div className={styles['right_Panel']}>
-                <form action="#" className={styles['form']}>
+                <form className={styles['form']}>
+                    
                     <Box className={styles['box']}>
                         <FormControl variant='outlined' fullWidth>
                             <StyledTextField
@@ -207,6 +210,7 @@ const Login = () => {
                         </Box>
                         <FormControl>
                             <Button
+                                type='button'
                                 fullWidth
                                 variant='outlined'
                                 startIcon={<img className={styles['google_Icon_Image']} src={GoogleIconImage} />}
@@ -220,6 +224,7 @@ const Login = () => {
                                         
                                     },
                                 }}
+
                             >
                                 Sign in with Google
                             </Button>
