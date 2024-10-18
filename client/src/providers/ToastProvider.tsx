@@ -16,7 +16,8 @@ interface ToastContextType {
   showToast: (
     message: string,
     severity: SeverityType,
-    position?: SnackbarOrigin
+    position?: SnackbarOrigin,
+    callback?: () => void
   ) => void;
 }
 
@@ -42,20 +43,27 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
     vertical: "top",
     horizontal: "right",
   });
+  const [closeCallback, setCloseCallback] = useState<(()=> void) | null>(null);
 
   const showToast = (
     msg: string,
     sev: SeverityType,
-    pos: SnackbarOrigin = { vertical: "top", horizontal: "right" }
+    pos: SnackbarOrigin = { vertical: "top", horizontal: "right" },
+    callback?: ()=> void
   ) => {
     setMessage(msg);
     setSeverity(sev);
     setPosition(pos);
     setOpen(true);
+    setCloseCallback(()=> callback || null);
   };
 
   const handleClose = () => {
     setOpen(false);
+    if (closeCallback) {
+      closeCallback();
+      setCloseCallback(null);
+    }
   };
 
   return (
@@ -63,7 +71,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
       {children}
       <Snackbar
         open={open}
-        autoHideDuration={6000}
+        autoHideDuration={3000}
         onClose={handleClose}
         anchorOrigin={position}
       >

@@ -34,7 +34,7 @@ export const Signup = async (req: Request, res: Response, next: NextFunction)=> 
             accountType, 
             password: hashedPassword,
             verificationToken,
-            verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000
+            verificationTokenExpiresAt: Date.now() + 15 * 60 * 1000,
         });
         
         await user.save();
@@ -49,16 +49,17 @@ export const Signup = async (req: Request, res: Response, next: NextFunction)=> 
 }
 
 export const verifyEmail = async(req: Request, res: Response)=> {
-    const { verificationToken } = req.body;
+    const { email, verificationToken } = req.body;
 
     try {
         const user = await User.findOne({
+            email,
             verificationToken,
             verificationTokenExpiresAt: { $gt: Date.now() }
         });
         
         if (!user) {
-            return res.status(403).json({success: false, message: "Invalid verification token"});
+            return res.status(403).json({success: false, message: "Invalid verification code"});
         };
 
         user.isTokenVerified = true;
@@ -67,7 +68,7 @@ export const verifyEmail = async(req: Request, res: Response)=> {
 
         await user.save();
         await sendWelcomeMail(user.email, user.firstname)
-        res.status(200).json({success:true, message: "Email verified successful, you can now login"})
+        return res.status(200).json({success:true, message: "Email verified successful, you can now login"})
     } catch (error) {
         console.error("Error sending welcome email", error);
 
@@ -116,14 +117,14 @@ export const Login = async (req: Request, res: Response, next: NextFunction)=> {
 
 export const getRefreshToken = async (req: Request, res: Response, next: NextFunction)=> {
     const { refreshToken } = req.body;
-    if (!refreshToken) return res.status(401).json({message: "Refresh token required"});
+    if (!refreshToken) return res.status(401).json({ success: false, message: "Refresh token required"});
 
     try {
         jwt.verify(refreshToken, process.env.REFRESH_TOKEN || "", async(err: any, user: any)=> {
-            if (err) return res.status(403).json({message: "Invalid refresh token"});
+            if (err) return res.status(403).json({ success: false, message: "Invalid refresh token"});
 
             const userData = await User.findById(user.id);
-            if (!userData) return res.status(404).json({message: "User not found"});
+            if (!userData) return res.status(404).json({ success: false, message: "User not found"});
 
             const accessToken = jwt.sign(
                 {id: user.id},
@@ -136,10 +137,52 @@ export const getRefreshToken = async (req: Request, res: Response, next: NextFun
                 sameSite: "strict",
                 maxAge: 2 * 60 *1000,
             })
-            res.status(200).json({success: true, accessToken})
+            return res.status(200).json({success: true, accessToken})
         })
     } catch (error) {
         console.error("An error occured while verifying refresh token", error);
         next(error);
+    }
+}
+
+export const resendVerficationEmail = async(req: Request, res: Response, next: NextFunction)=> {
+    const { email } = req.body;
+
+    const MAX_RESEND_ATTEMPTS = 3;
+    const CODE_EXPIRATION_TIME = 15 * 60 * 1000;
+    try {
+        
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found!"});
+        }
+    
+        if (user.isTokenVerified) {
+            return res.status(400).json({ success: true, message: "User is already verified"});
+        }
+    
+        if (user.resendAttempts >= MAX_RESEND_ATTEMPTS) {
+            return res.status(409).json({ success: false, message: "Too many attempts, please try again later."});
+        }
+    
+        const currentTime = new Date().getTime();
+        
+        /* Ran into an error when try to pass the verificationTokenExpiresAt data. first error was that it might be undefined, so the "&&" operator was used to check before proceeding with logic. second error was that typescript was unsure if `verificationTokenExipiresAt` was a number | Date, so it was converted to a number before proceeding with logic. */
+
+        if (user.verificationTokenExpiresAt && new Date(user.verificationTokenExpiresAt).getTime() > currentTime) {
+            return res.status(400).json({ success: false, message: "Verification code is still valid. Please wait until it expires."})
+        }
+    
+        // update user's resnd attempts and send a new verification email
+        user.resendAttempts += 1;
+        user.verificationToken = generateVerificationToken();
+        user.verificationTokenExpiresAt = currentTime + CODE_EXPIRATION_TIME;
+    
+        await user.save();
+        sendVerificationEmail(user.email, user.verificationToken);
+        return res.status(200).json({ success: true, message: "A new verification code has been sent to your email."});
+    } catch (error) {
+        console.error("Error resending verification email: ", error);
+        return next(error);
     }
 }

@@ -1,77 +1,80 @@
 import mongoose, { Schema, model } from "mongoose";
 interface UserDetails {
-    firstname: string;
-    lastname: string;
-    username: string;
-    email: string;
-    // role: string;
-    accountType: string;
-    password: string;
-    avatar?: string;
-    isActive: boolean;
-    isTokenVerified: boolean;
-    isAccountBadgeVerified: boolean;
-    lastLogin: Date;
-    resetPasswordToken: string | undefined;
-    resetPasswordExpiresAt: Date | undefined;
-    verificationToken: string | undefined;
-    verificationTokenExpiresAt: Date | undefined;
+  firstname: string;
+  lastname: string;
+  username: string;
+  email: string;
+  accountType: string;
+  password: string;
+  avatar?: string;
+  isActive: boolean;
+  isTokenVerified: boolean;
+  isAccountBadgeVerified: boolean;
+  lastLogin: Date;
+  resetPasswordToken: string | undefined;
+  resetPasswordExpiresAt: Date | undefined;
+  verificationToken: string | undefined;
+  verificationTokenExpiresAt: Date | number | undefined;
+  resendAttempts: number;
 }
 
-const userSchema = new Schema<UserDetails>({
+const userSchema = new Schema<UserDetails>(
+  {
     firstname: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     lastname: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     username: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     email: {
-        type: String,
-        required: true,
-        unique: true
+      type: String,
+      required: true,
+      unique: true,
     },
-    // role: {
-    //     type: String,
-    //     required: true
-    // },
     accountType: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     password: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     avatar: {
-        type: String,
-        default: '/images/blank-profile-picture.png'
+      type: String,
+      default: "/images/blank-profile-picture.png",
     },
     isActive: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
     isTokenVerified: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
     isAccountBadgeVerified: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
     lastLogin: {
-        type: Date,
-        default: Date.now,
+      type: Date,
+      default: Date.now,
     },
     resetPasswordToken: String,
     resetPasswordExpiresAt: Date,
     verificationToken: String,
     verificationTokenExpiresAt: Date,
-}, {timestamps: true})
+    resendAttempts: {
+      type: Number,
+      default: 0,
+    }
+  },
+  { timestamps: true }
+);
 
-export const User = mongoose.model<UserDetails>('User', userSchema);
+export const User = mongoose.model<UserDetails>("User", userSchema);

@@ -1,14 +1,29 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Box, Button, CircularProgress } from '@mui/material';
 import { VerifyAccountMessage } from '../../components/LoginWelcomeText/VerifyText';
 import styles from './index.module.css';
-import { Link } from 'react-router-dom';
+import { verifyUserEmail } from '../../api/verifyEmail.authService';
+import { useToast } from '../../providers/ToastProvider';
+import { resendVerficationEmail } from '../../api/resendVerificationEmail.authService';
 
 const VerifyEmail = ()=> {
-
+    const { showToast } = useToast();
+    const navigate = useNavigate();
     const [code, setCode] = useState<string[]>(["", "", "", "", "", ""]);
     const [loading, setLoading] = useState<boolean>(false);
+    const [resendLoading, setResendLoading] = useState<boolean>(false);
     const inputRefs = useRef<(HTMLInputElement | null)[]>(Array(6).fill(null));
+    const [userEmail, setUserEmail] = useState<string>("");
+    
+    // get the user email from local storage when the component mounts
+
+    useEffect(()=> {
+        const savedEmail = localStorage.getItem('email');
+        if (savedEmail) {
+            setUserEmail(savedEmail);
+        }
+    }, [])
 
     const handleChange = (index: number, value: string)=> {
         const newCode = [...code];
@@ -36,12 +51,12 @@ const VerifyEmail = ()=> {
             // update single character input
             newCode[index] = value;
             setCode(newCode);
-            
 
             //Move focus to the next input if not last
             if (value !== "" && index < 5) {
                 inputRefs.current[index + 1]?.focus();
             }
+
         }
     }
 
@@ -54,7 +69,68 @@ const VerifyEmail = ()=> {
     const handleSubmit = async(e: React.FormEvent)=> {
         e.preventDefault();
         setLoading(true);
+
+        const combinedCode = code.join("");
+        
+
+        if (combinedCode.length === 0) {
+            showToast('Verification code is required', 'error', {
+                vertical: 'top',
+                horizontal: 'center',
+            })
+            setLoading(false);
+            return;
+        }else if (combinedCode.length < 6) {
+            showToast('Verification code must be 6 digits', 'error', {
+                vertical: 'top',
+                horizontal: 'center',
+            })
+            setLoading(false);
+            return;
+        }else {
+            try {
+                const savedEmail = localStorage.getItem('email') || "";
+                const response = await verifyUserEmail(savedEmail, combinedCode.toString());
+                showToast(response.message,'success', {
+                    vertical: 'top',
+                    horizontal: 'center',
+                }, ()=> {
+                    navigate('/login');
+                })
+            } catch (error: any) {
+                console.error(error);
+                if(error.response?.data?.message){
+                    showToast(error.response.data.message, 'error', {
+                        vertical: 'top',
+                        horizontal: 'center',
+                    })
+                }
+                setLoading(false);
+            }
+        }
+    };
+
+    const handleResendEmailVerification = async ()=> {
+        setResendLoading(true);
+        try {
+            const response = await resendVerficationEmail(userEmail);
+            showToast(response.message, 'success', {
+                vertical: 'top',
+                horizontal: 'center',
+            })
+        } catch (error: any) {
+            setResendLoading(false);
+            console.error(error);
+            if(error.response?.data?.message){
+                showToast(error.response.data.message, 'error', {
+                    vertical: 'top',
+                    horizontal: 'center',
+                })
+            }
+        }
     }
+
+
 
     return (
         <section className={styles['container']}>
@@ -74,6 +150,7 @@ const VerifyEmail = ()=> {
                                     <input
                                         key={index}
                                         type='text'
+                                        name='verificationCode'
                                         value={digit}
                                         maxLength={1}
                                         onChange={(e)=> handleChange(index, e.target.value)}
@@ -118,7 +195,27 @@ const VerifyEmail = ()=> {
                         }
 
                         <div>
-                            <span className='text-[11px] font-medium tracking-wider'>Didn't receive the email? <Link to='#requestverificationcode' className='text-[#16962B] font-bold underline'>click here to resend</Link></span>
+                            <span className='text-[11px] font-medium tracking-wider'>Didn't receive the email?
+                                
+                                <Button
+                                    className='text-[#16962B] font-bold underline'
+                                    sx={{
+                                        textTransform: 'none',
+                                        padding: '0',
+                                        minWidth: 'auto',
+                                        color: '#16962B',
+                                        backgroundColor: 'transparent',
+                                        textDecoration: 'underline',
+                                        '&:hover': {
+                                            background: 'transparent',
+                                            textDecoration: 'underline'
+                                        }
+                                    }}
+                                    onClick={handleResendEmailVerification}
+                                >
+                                    {resendLoading ? "Resending please wait" : "click here to resend"}
+                                </Button>
+                            </span>
                         </div>
                     </Box>
                 </form>

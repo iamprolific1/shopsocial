@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import OutlinedInput from "@mui/material/OutlinedInput";
@@ -145,7 +145,8 @@ const CustomCheckbox = styled(Checkbox)({
 });
 
 const Signup = () => {
-    const { showToast } = useToast()
+    const { showToast } = useToast();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         firstname: '',
         lastname: '',
@@ -171,7 +172,7 @@ const Signup = () => {
         number: false,
         specialChar: false,
     });
-    const [formValidationErrors, setFormValidationErrors] = useState({})
+    const [formValidationErrors, setFormValidationErrors] = useState({});
 
     //handle password input change and set regex validation for password
     const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>)=> {
@@ -245,10 +246,14 @@ const Signup = () => {
         }else{
             try {
                 const response = await signupUser(formData);
+                localStorage.setItem('email', formData.email);
                 showToast(response.message, 'success', {
                     vertical: 'top',
                     horizontal: 'center'
+                }, ()=> {
+                    navigate('/verify-email')
                 })
+                
             } catch (error: any) {
                 console.error(error);
                 if (error.response?.data?.message) {
@@ -261,6 +266,7 @@ const Signup = () => {
             }
         }
     }
+
 
 
     return (
