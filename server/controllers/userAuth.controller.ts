@@ -7,6 +7,7 @@ import { sendVerificationEmail } from "../mailer/emails";
 import { sendWelcomeMail } from "../mailer/emails";
 import { generateAccessToken } from "../utils/generateAccessToken";
 import { generateRefreshToken } from "../utils/generateRefreshToken";
+// import { promisify } from 'util';
 
 export const Signup = async (req: Request, res: Response, next: NextFunction)=> {
     const { firstname, lastname, username, email, accountType, password } = req.body;
@@ -63,6 +64,7 @@ export const verifyEmail = async(req: Request, res: Response)=> {
         };
 
         user.isTokenVerified = true;
+        user.isAccountVerified = true;
         user.verificationToken = undefined;
         user.verificationTokenExpiresAt = undefined;
 
@@ -71,10 +73,8 @@ export const verifyEmail = async(req: Request, res: Response)=> {
         return res.status(200).json({success:true, message: "Email verified successful, you can now login"})
     } catch (error) {
         console.error("Error sending welcome email", error);
-
     }
 };
-
 export const Login = async (req: Request, res: Response, next: NextFunction)=> {
     const { email, password } = req.body;
     try {
@@ -93,8 +93,8 @@ export const Login = async (req: Request, res: Response, next: NextFunction)=> {
         };
         
         //password valid, generate tokens
-        generateAccessToken(res, user._id);
-        generateRefreshToken(res, user._id);
+        const accessToken = generateAccessToken(res, user._id);
+        const refreshToken = generateRefreshToken(res, user._id);
 
         //update login history
         user.lastLogin = new Date();
@@ -106,24 +106,29 @@ export const Login = async (req: Request, res: Response, next: NextFunction)=> {
         res.status(200).json({
             success: true,
             message: "Login Successfull!",
-            user: userWithoutPassword
+            user: userWithoutPassword,
+            accessToken,
+            refreshToken,
         })
 
     } catch (error) {
         console.error("An error occured", error)
         next(error)
     }
-}
+};
 
 export const getRefreshToken = async (req: Request, res: Response, next: NextFunction)=> {
     const { refreshToken } = req.body;
-    if (!refreshToken) return res.status(401).json({ success: false, message: "Refresh token required"});
+    if (!refreshToken) {
+        console.log("Refresh token required/not found");
+        return res.status(401).json({ success: false, message: "Refresh token required/not found"})
+    };
 
     try {
         jwt.verify(refreshToken, process.env.REFRESH_TOKEN || "", async(err: any, user: any)=> {
             if (err) return res.status(403).json({ success: false, message: "Invalid refresh token"});
 
-            const userData = await User.findById(user.id);
+            const userData = await User.findById(user.userId);
             if (!userData) return res.status(404).json({ success: false, message: "User not found"});
 
             const accessToken = jwt.sign(
@@ -131,13 +136,13 @@ export const getRefreshToken = async (req: Request, res: Response, next: NextFun
                 process.env.ACCESS_TOKEN || "",
                 { expiresIn: process.env.ACCESS_TOKEN_EXPIRY}
             )
-            res.cookie('accesstoken', accessToken, {
+            res.cookie('accessToken', accessToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
                 sameSite: "strict",
                 maxAge: 2 * 60 *1000,
             })
-            return res.status(200).json({success: true, accessToken})
+            return res.status(200).json({success: true, accessToken, userData})
         })
     } catch (error) {
         console.error("An error occured while verifying refresh token", error);
@@ -185,4 +190,9 @@ export const resendVerficationEmail = async(req: Request, res: Response, next: N
         console.error("Error resending verification email: ", error);
         return next(error);
     }
+}
+
+export const forgotPassword = async (req:Request, res: Response, next: NextFunction)=>{
+    const { email } = req.body;
+    if (!email) res.status(401).json({ success: false, message: 'Email is required' });
 }

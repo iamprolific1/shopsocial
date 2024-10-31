@@ -9,11 +9,12 @@ export const generateAccessToken =(res: Response, userId: string | ObjectId)=> {
         accessToken,
         { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
     );
-    res.cookie('accesstoken', token, {
+    res.cookie('accessToken', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: 'strict',
-        maxAge: 2 * 60 * 1000
+        sameSite: 'none',
+        maxAge: 2 * 60 * 1000,
+        path: '/'
     });
     return token;
 }

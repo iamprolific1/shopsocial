@@ -13,3 +13,19 @@
   width: 100px;
   height: 100px;
 }
+
+
+
+.profileContainer span {
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+  letter-spacing: 1px;
+  cursor: pointer;  
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}

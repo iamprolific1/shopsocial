@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import React, { useState } from 'react'
 import styles from './index.module.css';
 import Box from "@mui/material/Box";
-import { FormControl, InputLabel, OutlinedInput, IconButton, Button, Divider, Typography } from "@mui/material";
+import { FormControl, InputLabel, OutlinedInput, IconButton, Button, Divider, Typography, CircularProgress } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -10,6 +10,9 @@ import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material/styles";
 import { LoginWelcomeText } from '../../components/LoginWelcomeText/LoginWelcomeText';
 import GoogleIconImage from '../../assets/googleIcon.png';
+
+import { useAuth } from '../../providers/AuthProvider';
+import { useToast } from '../../providers/ToastProvider';
 
 
 const StyledTextField = styled(TextField)({
@@ -84,7 +87,10 @@ const StyledOutlinedInput = styled(OutlinedInput)({
 });
 
 const Login = () => {
-    const [showPassword, setShowPassword] = useState(false)
+    const { showToast } = useToast();
+    const navigate = useNavigate();
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
     const passwordToggleVisibility = () => {
         setShowPassword((prev)=> !prev)
     }
@@ -96,6 +102,52 @@ const Login = () => {
         event.preventDefault();
     };
 
+    const [formData, setFormData] = useState({
+        email: '',
+        password: ''
+    });
+
+    
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)=> {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
+
+    const { login } = useAuth();
+
+    const handleSubmit = async(e: React.FormEvent<HTMLFormElement>)=> {
+        e.preventDefault();
+        setLoading(true);
+        const { email, password } = formData; 
+        try {
+            const response = await login(email, password);
+            if (response.success) {
+                showToast(response.message, 'success', {
+                    vertical: 'top',
+                    horizontal: 'center',
+                }, ()=> {
+                    navigate('/')
+                })
+            }else {
+                showToast(response.message, 'error', {
+                    vertical: 'top',
+                    horizontal: 'center',
+                })
+            }
+
+        }catch(error: any) {
+            console.error("Error logging in user: ", error);
+            showToast('An unexpected error occured', 'error', {
+                vertical: 'top',
+                horizontal: 'center'
+            })
+        } finally {
+            setLoading(false);
+        }
+    }
 
     return (
         <section className={styles['container']}>
@@ -128,16 +180,19 @@ const Login = () => {
                 </div>
             </div>
             <div className={styles['right_Panel']}>
-                <form className={styles['form']}>
+                <form onSubmit={handleSubmit} className={styles['form']}>
                     
                     <Box className={styles['box']}>
                         <FormControl variant='outlined' fullWidth>
                             <StyledTextField
                                 label="Email"
+                                name='email'
                                 variant="outlined"
                                 type='email'
                                 required
                                 className={styles['input']}
+                                onChange={handleChange}
+                                value={formData.email || ''}
                             />
                         </FormControl>
                         <FormControl>
@@ -155,6 +210,7 @@ const Login = () => {
                             </InputLabel>
                             <StyledOutlinedInput
                                 id="outlined-adornment-password"
+                                name='password'
                                 type={showPassword ? 'text' : 'password'}
                                 endAdornment={
                                 <InputAdornment position="end">
@@ -171,25 +227,53 @@ const Login = () => {
                                 }
                                 label="Password"
                                 sx={{ borderRadius: '8px'}}
+                                onChange={handleChange}
+                                value={formData.password || ''}
                             />
                         </FormControl>
                         <FormControl>
-                            <Button 
-                            variant="contained"
-                            sx={{
-                                background: '#1DC939',
-                                margin: '10px 0',
-                                padding: '10px 0',
-                                fontSize: '15px',
-                                letterSpacing: '1px',
-                                transition: 'background-color 0.3s ease, transform 0.3s ease',
-                                '&:hover': {
-                                    background: '#17A827',
-                                    transform: 'scale(1.02)',
-                                },
-                            }}
+                            {
+                                loading ? (
+                                    <Button 
+                                        variant="contained"
+                                        type="submit"
+                                        sx={{
+                                            background: '#1DC939',
+                                            margin: '10px 0',
+                                            padding: '10px 0',
+                                            fontSize: '15px',
+                                            letterSpacing: '1px',
+                                            transition: 'background-color 0.3s ease, transform 0.3s ease',
+                                            '&:hover': {
+                                                background: '#17A827',
+                                                transform: 'scale(1.02)',
+                                            },
+                                        }}
+                                        
+                                    >
+                                        <CircularProgress sx={{ color: 'white', marginRight: '10px'}} size={'20px'} /> Please wait...
+                                    </Button>
+                                ) : (
+                                    <Button 
+                                        variant="contained"
+                                        type="submit"
+                                        sx={{
+                                            background: '#1DC939',
+                                            margin: '10px 0',
+                                            padding: '10px 0',
+                                            fontSize: '15px',
+                                            letterSpacing: '1px',
+                                            transition: 'background-color 0.3s ease, transform 0.3s ease',
+                                            '&:hover': {
+                                                background: '#17A827',
+                                                transform: 'scale(1.02)',
+                                            },
+                                        }}
+                                        
+                                    >Login</Button>
+                                )
+                            }
                             
-                        >Login</Button>
                         </FormControl>
                         <Box>
                             <Divider sx={{ margin: '15px 0', position: 'relative'}}>

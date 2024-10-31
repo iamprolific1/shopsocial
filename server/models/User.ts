@@ -9,6 +9,7 @@ interface UserDetails {
   avatar?: string;
   isActive: boolean;
   isTokenVerified: boolean;
+  isAccountVerified: boolean;
   isAccountBadgeVerified: boolean;
   lastLogin: Date;
   resetPasswordToken: string | undefined;
@@ -54,6 +55,10 @@ const userSchema = new Schema<UserDetails>(
       default: false,
     },
     isTokenVerified: {
+      type: Boolean,
+      default: false,
+    },
+    isAccountVerified: {
       type: Boolean,
       default: false,
     },
